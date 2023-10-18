@@ -41,29 +41,29 @@ service:
   port: 80
 
 application:
-  DB_HOST: 
+  DB_HOST: "localhost"
 
-mysql:
-  persistence:
-    enabled: true
-    size: 15G
+#mysql:
+#  persistence:
+#    enabled: true
+#    size: 15G
 
 ingress:
-  enabled: true
-  className: ""
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    ingress.kubernetes.io/force-ssl-redirect: true
-    ingress.kubernetes.io/proxy-body-size: 0
-    ingress.kubernetes.io/ssl-redirect: true
+  enabled: flase
+#  className: ""
+#  annotations:
+#    cert-manager.io/cluster-issuer: letsencrypt-prod
+#    ingress.kubernetes.io/force-ssl-redirect: true
+#    ingress.kubernetes.io/proxy-body-size: 0
+#    ingress.kubernetes.io/ssl-redirect: true
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: auth.cstoneweb.com
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
+#  hosts:
+#    - host: auth.cstoneweb.com
+#      paths:
+#        - path: /
+#          pathType: ImplementationSpecific
+ # tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
