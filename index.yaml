@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  johnson-media-nzbhydra2:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-10-18T16:11:32.709072925Z"
+    description: A Helm chart deploying nzbhydra2 in Johnson Media Home Lab
+    digest: 142dfebfcaf5a6261f2410e6ada65557cb151d2a9e1b487e99d877ce7cf59805
+    name: johnson-media-nzbhydra2
+    type: application
+    urls:
+    - https://github.com/frobobbo/helm-charts/releases/download/johnson-media-nzbhydra2-0.1.0/johnson-media-nzbhydra2-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-10-18T16:11:32.709078725Z"
