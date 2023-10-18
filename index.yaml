@@ -14,6 +14,16 @@ entries:
   pi-frame-auth-app:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2023-10-18T19:34:35.810916557Z"
+    description: A Helm chart for Deploying the Authentication Web app for Pi Frame
+    digest: 139808d1ee6f361aa29dfcf38eaa17a9d28e6e234db358bc646911c4b9d2f613
+    name: pi-frame-auth-app
+    type: application
+    urls:
+    - https://github.com/frobobbo/helm-charts/releases/download/pi-frame-auth-app-0.1.1/pi-frame-auth-app-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2023-10-18T19:19:35.847287213Z"
     description: A Helm chart for Deploying the Authentication Web app for Pi Frame
     digest: 012940ea65d657d05df2c5411fcc4804b0c1eecc590f63bad2ad631f9387fbb7
@@ -22,4 +32,4 @@ entries:
     urls:
     - https://github.com/frobobbo/helm-charts/releases/download/pi-frame-auth-app-0.1.0/pi-frame-auth-app-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-18T19:19:35.847292713Z"
+generated: "2023-10-18T19:34:35.810929357Z"
