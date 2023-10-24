@@ -4,13 +4,29 @@
 
 replicaCount: 1
 
-image:
+webapp:
   repository: ghcr.io/frobobbo/piphoto-auth-app
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
+imagePullSecrets:
+  - name: gitauth
 
-imagePullSecrets: []
+db:
+  repository: ghcr.io/frobobbo/piphoto-auth-db
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+imagePullSecrets:
+  - name: gitauth
+
+
+imageCredentials:
+  registry: ghcr.io
+  user: frobobbo
+  auth: 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
+  email: johnsobd@gmail.com
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -37,8 +53,9 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  webapp:
+    type: ClusterIP
+    port: 8080
 
 application:
   DB_HOST: "localhost"
@@ -49,7 +66,7 @@ application:
 #    size: 15G
 
 ingress:
-  enabled: flase
+  enabled: false
 #  className: ""
 #  annotations:
 #    cert-manager.io/cluster-issuer: letsencrypt-prod
