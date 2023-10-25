@@ -24,7 +24,7 @@ imagePullSecrets:
 imageCredentials:
   registry: ghcr.io
   user: frobobbo
-  auth: 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
+  auth: 
   email: johnsobd@gmail.com
 
 nameOverride: ""
