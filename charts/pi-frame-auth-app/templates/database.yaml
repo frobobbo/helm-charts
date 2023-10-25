@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pi-frame-auth-app.fullname" . }}
+  name: {{ include "pi-frame-auth-app.fullname" . }}-db
   labels:
-    {{- include "pi-frame-auth-app.labels" . | nindent 4 }}
+    {{- include "pi-frame-auth-app.labels" . | nindent 4 }}-db
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}
+      {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}-db
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "pi-frame-auth-app.selectorLabels" . | nindent 8 }}
+        {{- include "pi-frame-auth-app.selectorLabels" . | nindent 8 }}-db
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -28,32 +28,34 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Chart.Name }}-db
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.webapp.repository }}:{{ .Values.webapp.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.webapp.pullPolicy }}
+          image: "{{ .Values.db.repository }}:{{ .Values.db.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.db.pullPolicy }}
           env:
-            - name: DB_HOST
-              value: {{ include "pi-frame-auth-app.fullname" . }}-db
-            - name: DB_NAME
-              value:
-            - name: DB_USER
-              value:
-            - name: DB_PASS
-              value: 
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
           ports:
             - name: http
-              containerPort: {{ .Values.service.webapp.port }}
+              containerPort: {{ .Values.service.db.port }}
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command: ["mysqladmin", "ping"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              # Check we can execute queries over TCP (skip-networking is off).
+              command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            timeoutSeconds: 1
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

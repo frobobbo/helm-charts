@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pi-frame-auth-app.fullname" . }}-phpmyadmin
+  labels:
+    app: {{- include "pi-frame-auth-app.labels" . | nindent 4 }}-phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}-phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: {{- include "pi-frame-auth-app.selectorLabels" . | nindent 8 }}phpmyadmin
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-phpmyadmin
+          image: phpmyadmin/phpmyadmin
+          ports:
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              value: {{ include "pi-frame-auth-app.fullname" . }}-db
+            - name: PMA_PORT
+              value: {{ .Values.service.db.port }}
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password

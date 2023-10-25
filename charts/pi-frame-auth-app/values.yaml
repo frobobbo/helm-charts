@@ -56,9 +56,12 @@ service:
   webapp:
     type: ClusterIP
     port: 8080
+  db:
+    type: ClusterIP
+    port: 3309
 
 application:
-  DB_HOST: "localhost"
+  DB_NAME: "localhost"
 
 #mysql:
 #  persistence:
