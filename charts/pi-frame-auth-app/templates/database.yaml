@@ -39,10 +39,23 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: password
+            - name: APP_USER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: password
+            - name: APP_DB_NAME
+              value: {{ .Values.application.DB_NAME }}
+            - name: APP_DB_USER
+              value: {{ .Values.application.DB_USER }}
           ports:
             - name: http
               containerPort: {{ .Values.service.db.port }}
               protocol: TCP
+          initdbScripts:
+            init.sql: |
+              CREATE USER '${APP_DB_USER:-}'@'localhost' IDENTIFIED BY '${APP_USER_PASS:-}';
+              GRANT ALL PRIVILEGES ON '${APP_DB_NAME:-}'.* TO '${APP_DB_USER:-}'@'localhost';
           livenessProbe:
             failureThreshold: 3
             initialDelaySeconds: 120

@@ -77,8 +77,9 @@ service:
     port: 3306
 
 application:
-  DB_NAME: "localhost"
-
+  DB_NAME: "photoframeUsers"
+  DB_USER: "authUsr"
+  
 #mysql:
 #  persistence:
 #    enabled: true
