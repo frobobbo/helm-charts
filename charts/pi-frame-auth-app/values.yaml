@@ -30,6 +30,22 @@ imageCredentials:
 nameOverride: ""
 fullnameOverride: ""
 
+hostAliases:
+  ## Necessary for apache-exporter to work
+  ##
+  - ip: "127.0.0.1"
+    hostnames:
+      - "status.localhost"
+
+phpmyadmin:
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsNonRoot: true
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -58,7 +74,7 @@ service:
     port: 8080
   db:
     type: ClusterIP
-    port: 3309
+    port: 3306
 
 application:
   DB_NAME: "localhost"

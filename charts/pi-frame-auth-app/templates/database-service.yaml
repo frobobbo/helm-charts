@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ include "pi-frame-auth-app.fullname" . }}-db
   labels:
-    app: {{ include "pi-frame-auth-app.name" . }}-db
+    {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}-db
 spec:
   selector:
-    app: {{ include "pi-frame-auth-app.name" . }}-db
+    {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}-db
   ports:
     - protocol: TCP
       port: {{ .Values.service.db.port }}

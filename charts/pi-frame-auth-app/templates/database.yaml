@@ -34,7 +34,7 @@ spec:
           image: "{{ .Values.db.repository }}:{{ .Values.db.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.db.pullPolicy }}
           env:
-            - name: MYSQL_ROOT_PASSWORD
+            - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
@@ -44,18 +44,37 @@ spec:
               containerPort: {{ .Values.service.db.port }}
               protocol: TCP
           livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
             exec:
-              command: ["mysqladmin", "ping"]
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  password_aux="${MARIADB_ROOT_PASSWORD:-}"
+                  if [[ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]]; then
+                      password_aux=$(cat "$MARIADB_ROOT_PASSWORD_FILE")
+                  fi
+                  mariadb-admin status -uroot -p"${password_aux}"
+          readinessProbe:
+            failureThreshold: 3
             initialDelaySeconds: 30
             periodSeconds: 10
-            timeoutSeconds: 5
-          readinessProbe:
-            exec:
-              # Check we can execute queries over TCP (skip-networking is off).
-              command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
-            initialDelaySeconds: 5
-            periodSeconds: 2
+            successThreshold: 1
             timeoutSeconds: 1
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  password_aux="${MARIADB_ROOT_PASSWORD:-}"
+                  if [[ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]]; then
+                      password_aux=$(cat "$MARIADB_ROOT_PASSWORD_FILE")
+                  fi
+                  mariadb-admin status -uroot -p"${password_aux}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

@@ -3,27 +3,38 @@ kind: Deployment
 metadata:
   name: {{ include "pi-frame-auth-app.fullname" . }}-phpmyadmin
   labels:
-    app: {{- include "pi-frame-auth-app.labels" . | nindent 4 }}-phpmyadmin
+    {{- include "pi-frame-auth-app.labels" . | nindent 4 }}-phpmyadmin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}-phpmyadmin
+      {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}-phpmyadmin
   template:
     metadata:
       labels:
-        app: {{- include "pi-frame-auth-app.selectorLabels" . | nindent 8 }}phpmyadmin
+        {{- include "pi-frame-auth-app.selectorLabels" . | nindent 8 }}-phpmyadmin
     spec:
+      hostAliases: {{- include "common.tplvalues.render" (dict "value" .Values.hostAliases "context" $) | nindent 8 }}
+      {{- if .Values.phpmyadmin.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.phpmyadmin.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-phpmyadmin
-          image: phpmyadmin/phpmyadmin
+          {{- if .Values.phpmyadmin.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.phpmyadmin.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          image: bitnami/phpmyadmin
           ports:
-            - containerPort: 80
+            - containerPort: 8080
+              name: http
+              protocol: TCP
           env:
-            - name: PMA_HOST
+            - name: BITNAMI_DEBUG
+              value: "true"
+            - name: DATABASE_HOST
               value: {{ include "pi-frame-auth-app.fullname" . }}-db
-            - name: PMA_PORT
-              value: {{ .Values.service.db.port }}
+            - name: DATABASE_PORT_NUMBER
+              value: '{{ .Values.service.db.port }}'
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:

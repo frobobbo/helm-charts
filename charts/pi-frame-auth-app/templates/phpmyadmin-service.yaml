@@ -1,12 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: phpmyadmin-service
+  name: {{ template "common.names.fullname" . }}-phpmyadmin
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  {{- if or .Values.service.annotations .Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.service.annotations .Values.commonAnnotations ) "context" . ) }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $) | nindent 4 }}
+  {{- end }}
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    app: phpmyadmin
+    {{- include "pi-frame-auth-app.selectorLabels" . | nindent 6 }}-phpmyadmin
   ports:
-  - protocol: TCP
+  - name: http
+    protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: http
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: https
