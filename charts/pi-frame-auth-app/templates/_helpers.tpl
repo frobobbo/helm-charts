@@ -23,6 +23,26 @@ Expand the name of the chart.
 {{- end }}
 {{- end -}}
 
+{{ template "mariadb.initdbScriptsCM" . }}
+{{/*
+Get the initialization scripts ConfigMap name.
+*/}}
+{{- define "mariadb.initdbScriptsCM" -}}
+{{- if .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- else -}}
+{{- printf "%s-init-scripts" (include "db.primary.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "db.primary.fullname" -}}
+{{- if eq .Values.architecture "replication" }}
+{{- printf "%s-%s" (include "common.names.fullname" .) "primary" | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- include "common.names.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "common.tplvalues.merge" -}}
 {{- $dst := dict -}}
 {{- range .values -}}

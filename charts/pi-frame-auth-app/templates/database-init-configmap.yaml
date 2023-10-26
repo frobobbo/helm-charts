@@ -1,0 +1,10 @@
+{{- if and .Values.db.initdbScripts (not .Values.initdbScriptsConfigMap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-init-scripts" (include "db.primary.fullname" .) }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+data:
+{{- include "common.tplvalues.render" (dict "value" .Values.db.initdbScripts "context" .) | nindent 2 }}
+{{ end }}
