@@ -39,14 +39,14 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: password
-            - name: APP_USER_PASS
+            - name: MARIADB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: app-secret
                   key: password
-            - name: APP_DB_NAME
+            - name: MARIADB_DATABASE
               value: {{ .Values.application.DB_NAME }}
-            - name: APP_DB_USER
+            - name: MARIADB_USER
               value: {{ .Values.application.DB_USER }}
           ports:
             - name: http
