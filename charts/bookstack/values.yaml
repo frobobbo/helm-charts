@@ -1,54 +1,30 @@
-# Default values for pi-frame-auth-app.
+# Default values for bookstack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-webapp:
-  repository: ghcr.io/frobobbo/piphoto-auth-app
+app:
+  repository: lscr.io/linuxserver/bookstack
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
-imagePullSecrets:
-  - name: gitauth
+  tag: "latest"
 
 db:
-  repository: ghcr.io/frobobbo/piphoto-auth-db
+  repository: bitnami/mariadb
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
-#  initdbScripts:
-#    init.sql: |
-#      CREATE USER '${APP_DB_USER:-}'@'localhost' IDENTIFIED BY '${APP_USER_PASS:-}';
-#      GRANT ALL PRIVILEGES ON '${APP_DB_NAME:-}'.* TO '${APP_DB_USER:-}'@'localhost';
-  
-imagePullSecrets:
-  - name: gitauth
+  tag: "latest"
 
-imageCredentials:
-  registry: ghcr.io
-  user: frobobbo
-  auth: 
-  email: johnsobd@gmail.com
-
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-hostAliases:
-  ## Necessary for apache-exporter to work
-  ##
-  - ip: "127.0.0.1"
-    hostnames:
-      - "status.localhost"
-
-phpmyadmin:
-  podSecurityContext:
-    enabled: true
-    fsGroup: 1001
-  containerSecurityContext:
-    enabled: true
-    runAsUser: 1001
-    runAsNonRoot: true
+env:
+  DB_PORT: "3306"
+  DB_USER: "bkStckUsr" 
+  DB_DATABASE: "dbBookStack"
+  APP_URL: "https://bookstack.johnsons.casa"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -73,38 +49,25 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  webapp:
+  app:
     type: ClusterIP
-    port: 8080
+    port: 80
   db:
     type: ClusterIP
     port: 3306
 
-application:
-  DB_NAME: "photoframeUsers"
-  DB_USER: "authUsr"
-
-#mysql:
-#  persistence:
-#    enabled: true
-#    size: 15G
-
 ingress:
   enabled: false
-#  className: ""
-#  annotations:
-#    cert-manager.io/cluster-issuer: letsencrypt-prod
-#    ingress.kubernetes.io/force-ssl-redirect: true
-#    ingress.kubernetes.io/proxy-body-size: 0
-#    ingress.kubernetes.io/ssl-redirect: true
+  className: ""
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-#  hosts:
-#    - host: auth.cstoneweb.com
-#      paths:
-#        - path: /
-#          pathType: ImplementationSpecific
- # tls: []
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local

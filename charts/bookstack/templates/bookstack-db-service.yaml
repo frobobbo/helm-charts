@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "bookstack.fullname" . }}-db
+  labels:
+    {{- include "bookstack.selectorLabels" . | nindent 6 }}-db
+spec:
+  selector:
+    {{- include "bookstack.selectorLabels" . | nindent 6 }}-db
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.db.port }}
+      targetPort: {{ .Values.service.db.port }}
