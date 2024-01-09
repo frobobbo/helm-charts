@@ -3,6 +3,16 @@ entries:
   bookstack:
   - apiVersion: v2
     appVersion: 23.10.0
+    created: "2024-01-09T15:32:32.092236201Z"
+    description: BookStack - Simple and Free Wiki Software (https://www.bookstackapp.com/)
+    digest: 40b7bfbaed942e2d99995b766df909c4730f319515a6d47b24ee4ffd113ba06b
+    name: bookstack
+    type: application
+    urls:
+    - https://github.com/frobobbo/helm-charts/releases/download/bookstack-0.1.6/bookstack-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
+    appVersion: 23.10.0
     created: "2024-01-09T15:05:38.436209561Z"
     description: BookStack - Simple and Free Wiki Software (https://www.bookstackapp.com/)
     digest: d91e5ab0154855dec1b864454cb47232a51e02e9bf56c77692b3d1d002eeeb25
@@ -93,4 +103,4 @@ entries:
     urls:
     - https://github.com/frobobbo/helm-charts/releases/download/pi-frame-auth-app-0.1.0/pi-frame-auth-app-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-09T15:05:38.436232524Z"
+generated: "2024-01-09T15:32:32.09227844Z"
