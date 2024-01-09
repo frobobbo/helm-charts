@@ -87,16 +87,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            {{- if or .Values.initdbScriptsConfigMap .Values.db.initdbScripts }}
-            - name: custom-init-scripts
-              mountPath: /docker-entrypoint-initdb.d
-            {{- end }}
+            - name: {{ template "bookstack.fullname" . }}-db
+              mountPath: /bitnami/mariadb
       volumes:
-        {{- if or .Values.initdbScriptsConfigMap .Values.db.initdbScripts }}
-        - name: custom-init-scripts
-          configMap:
-            name: {{ template "mariadb.initdbScriptsCM" . }}
-        {{- end }}
+        - name: {{ template "bookstack.fullname" . }}-db
+        persistentVolumeClaim:
+          claimName: {{ template "bookstack.fullname" . }}-db
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

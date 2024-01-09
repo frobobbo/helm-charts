@@ -73,6 +73,9 @@ spec:
             periodSeconds: 15
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /config
+              name: {{ template "bookstack.fullname" . }}-config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -85,3 +88,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+      - name: {{ template "bookstack.fullname" . }}-config
+        persistentVolumeClaim:
+          claimName: {{ template "bookstack.fullname" . }}-config
