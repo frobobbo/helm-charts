@@ -7,6 +7,6 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 500Mi
   storageClassName: "vsphere-storage"
 status: {}
